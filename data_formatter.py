@@ -15,7 +15,7 @@ tf.app.flags.DEFINE_string('in_directories', '', 'path to directory')
 tf.app.flags.DEFINE_string('out_files', '', 'comma separated paths to files')
 tf.app.flags.DEFINE_string('split', '', 'comma separated fractions of data')
 
-VOCAB_LIMIT = 200000
+VOCAB_LIMIT = 100000
 CHUNK_SIZE = 1000 # num examples per chunk, for the chunked data
 
 def text_to_binary(input_directories, output_filenames, split_fractions):
