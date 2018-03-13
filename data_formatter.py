@@ -51,8 +51,8 @@ def convert_files_to_binary(input_filenames, output_filename, counter):
 					counter.update(' '.join([abstract, s1, s2]).split())
 
 					# then create serialized version of abstract/article for training
-					abstract = bytes(abstract, 'utf-8')
-					article = bytes(' '.join([s1, s2]), 'utf-8')
+					# abstract = bytearray(abstract, 'utf-8')
+					article = ' '.join([s1, s2])
 					tf_example = example_pb2.Example()
 					tf_example.features.feature['article'].bytes_list.value.extend([article])
 					tf_example.features.feature['abstract'].bytes_list.value.extend([abstract])
@@ -60,7 +60,6 @@ def convert_files_to_binary(input_filenames, output_filename, counter):
 					str_len = len(tf_example_str)
 					serialized_f.write(struct.pack('q', str_len))
 					serialized_f.write(struct.pack('%ds' % str_len, tf_example_str))
-
 
 def get_filenames(input_directories):
   filenames = []
