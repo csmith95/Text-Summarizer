@@ -20,6 +20,7 @@ import glob
 import random
 import struct
 import csv
+import re
 from tensorflow.core.example import example_pb2
 
 # <s> and </s> are used in the data files to segment the abstracts into sentences. They don't receive vocab ids.
