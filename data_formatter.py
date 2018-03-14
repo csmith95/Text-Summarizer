@@ -68,10 +68,6 @@ def convert_files_to_binary(input_filenames, output_filename, counter):
 					# split & count words
                     counter.update(' '.join([abstract, s1, s2]).split())
 
-                    # add start/end tags for compatibility with repo
-                    s1 = SENTENCE_START + s1 + SENTENCE_END
-                    s2 = SENTENCE_START + s2 + SENTENCE_END
-
 					# then create serialized version of abstract/article for training
 					# abstract = bytearray(abstract, 'utf-8')
                     article = ' '.join([s1, s2])
