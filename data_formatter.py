@@ -8,22 +8,35 @@ from os import listdir
 from os.path import isfile, join
 from tensorflow.core.example import example_pb2
 from numpy.random import shuffle as random_shuffle
+from lexrank import lexrank
 
 
 FLAGS = tf.app.flags.FLAGS
 tf.app.flags.DEFINE_string('in_directories', '', 'path to directory')
 tf.app.flags.DEFINE_string('out_files', '', 'comma separated paths to files')
 tf.app.flags.DEFINE_string('split', '', 'comma separated fractions of data')
+tf.app.flags.DEFINE_string('lexrank', '', 'bool indicating whether to use lexrank')
 
 VOCAB_LIMIT = 200000
 SENTENCE_START = '<s>'
 SENTENCE_END = '</s>'
+
+
+def lexrankSentences(match):
+    abstract, text = match
+    pattern2 = re.compile(r'<P>([\w\W]+?)</P>')
+    pattern3 = re.compile(r'\n')
+    text = pattern3.sub(" ",text)
+    sentences = pattern2.findall(text)
+    s1,s1 = lexrank(sentences)
+    return abstract, s1, s2
 
 def text_to_binary(input_directories, output_filenames, split_fractions):
     filenames = get_filenames(input_directories)
     random_shuffle(filenames)
     start_from_index = 0
     counter = collections.Counter()	# for the vocab counts
+
     for index, output_filename in enumerate(output_filenames):
         sample_count = int(len(filenames) * split_fractions[index])
         print(output_filename + ': ' + str(sample_count))
@@ -41,15 +54,19 @@ def text_to_binary(input_directories, output_filenames, split_fractions):
         vocab_f.write('<PAD> 0\n')
 
 def convert_files_to_binary(input_filenames, output_filename, counter):
-	with open(output_filename, 'wb') as serialized_f:
-		for filename in input_filenames:
-			with open(filename, 'r') as input_f:
-				pattern = re.compile(r'<HEADLINE>\n([\w\W]+?)\n</HEADLINE>[\w\W]+?<P>\n([\w\W]+?)\n</P>[\w\W]+?<P>\n([\w\W]+?)\n</P>')
-				for match in pattern.findall(input_f.read()):
-					abstract, s1, s2 = match
+    with open(output_filename, 'wb') as serialized_f:
+        for filename in input_filenames:
+            with open(filename, 'r') as input_f:
+                pattern = re.compile(r'<HEADLINE>\n([\w\W]+?)\n</HEADLINE>[\w\W]+?<P>\n([\w\W]+?)\n</P>[\w\W]+?<P>\n([\w\W]+?)\n</P>')
+                if FLAGS.lexrank == True:
+                    pattern = re.compile(r'<HEADLINE>\n([\w\W]+?)\n</HEADLINE>[\w\W]+?<TEXT>\n([\w\W]+?)\n</TEXT>')
+                for match in pattern.findall(input_f.read()):
+
+                    if FLAGS.lexrank == True: abstract, s1, s2 = lexrankSentences(match)
+                    else: abstract, s1, s2 = match
 
 					# split & count words
-					counter.update(' '.join([abstract, s1, s2]).split())
+                    counter.update(' '.join([abstract, s1, s2]).split())
 
                     # add start/end tags for compatibility with repo
                     s1 = SENTENCE_START + s1 + SENTENCE_END
@@ -57,14 +74,14 @@ def convert_files_to_binary(input_filenames, output_filename, counter):
 
 					# then create serialized version of abstract/article for training
 					# abstract = bytearray(abstract, 'utf-8')
-					article = ' '.join([s1, s2])
-					tf_example = example_pb2.Example()
-					tf_example.features.feature['article'].bytes_list.value.extend([article])
-					tf_example.features.feature['abstract'].bytes_list.value.extend([abstract])
-					tf_example_str = tf_example.SerializeToString()
-					str_len = len(tf_example_str)
-					serialized_f.write(struct.pack('q', str_len))
-					serialized_f.write(struct.pack('%ds' % str_len, tf_example_str))
+                    article = ' '.join([s1, s2])
+                    tf_example = example_pb2.Example()
+                    tf_example.features.feature['article'].bytes_list.value.extend([article])
+                    tf_example.features.feature['abstract'].bytes_list.value.extend([abstract])
+                    tf_example_str = tf_example.SerializeToString()
+                    str_len = len(tf_example_str)
+                    serialized_f.write(struct.pack('q', str_len))
+                    serialized_f.write(struct.pack('%ds' % str_len, tf_example_str))
 
 def get_filenames(input_directories):
   filenames = []
@@ -88,7 +105,6 @@ def main(unused_args):
     assert FLAGS.in_directories and FLAGS.out_files
     output_filenames = FLAGS.out_files.split(',')
     input_directories = FLAGS.in_directories.split(',')
-
     clear_files(output_filenames)
     assert FLAGS.split
     split_fractions = [float(s) for s in FLAGS.split.split(',')]
