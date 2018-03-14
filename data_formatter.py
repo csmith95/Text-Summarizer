@@ -15,8 +15,9 @@ tf.app.flags.DEFINE_string('in_directories', '', 'path to directory')
 tf.app.flags.DEFINE_string('out_files', '', 'comma separated paths to files')
 tf.app.flags.DEFINE_string('split', '', 'comma separated fractions of data')
 
-VOCAB_LIMIT = 100000
-CHUNK_SIZE = 1000 # num examples per chunk, for the chunked data
+VOCAB_LIMIT = 200000
+SENTENCE_START = '<s>'
+SENTENCE_END = '</s>'
 
 def text_to_binary(input_directories, output_filenames, split_fractions):
     filenames = get_filenames(input_directories)
@@ -49,6 +50,10 @@ def convert_files_to_binary(input_filenames, output_filename, counter):
 
 					# split & count words
 					counter.update(' '.join([abstract, s1, s2]).split())
+
+                    # add start/end tags for compatibility with repo
+                    s1 = SENTENCE_START + s1 + SENTENCE_END
+                    s2 = SENTENCE_START + s2 + SENTENCE_END
 
 					# then create serialized version of abstract/article for training
 					# abstract = bytearray(abstract, 'utf-8')

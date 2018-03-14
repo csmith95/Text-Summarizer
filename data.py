@@ -228,17 +228,17 @@ def abstract2sents(abstract):
 
   Returns:
     sents: List of sentence strings (no tags)"""
-  # cur = 0
-  # sents = []
-  # while True:
-  #   try:
-  #     start_p = abstract.index(SENTENCE_START, cur)
-  #     end_p = abstract.index(SENTENCE_END, start_p + 1)
-  #     cur = end_p + len(SENTENCE_END)
-  #     sents.append(abstract[start_p+len(SENTENCE_START):end_p])
-  #   except ValueError as e: # no more sentences
-  #     return sents
-  return re.split(r'[.?!]', abstract)
+  cur = 0
+  sents = []
+  while True:
+    try:
+      start_p = abstract.index(SENTENCE_START, cur)
+      end_p = abstract.index(SENTENCE_END, start_p + 1)
+      cur = end_p + len(SENTENCE_END)
+      sents.append(abstract[start_p+len(SENTENCE_START):end_p])
+    except ValueError as e: # no more sentences
+      return sents
+  # return re.split(r'[.?!]', abstract)
 
 
 def show_art_oovs(article, vocab):
