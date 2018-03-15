@@ -66,9 +66,9 @@ def convert_files_to_binary(input_filenames, output_filename, counter):
                     else: abstract, s1, s2 = match
 
 					# split & count words
-                    abstract = re.sub(r"\s+", " ", abstract)
-                    s1 = re.sub(r"\s+", " ", s1)
-                    s2 = re.sub(r"\s+", " ", s2)
+                    abstract = re.sub(r"\s+", " ", abstract).lower()
+                    s1 = re.sub(r"\s+", " ", s1).lower()
+                    s2 = re.sub(r"\s+", " ", s2).lower()
                     counter.update(' '.join([abstract, s1, s2]).split())
 
 					# then create serialized version of abstract/article for training
