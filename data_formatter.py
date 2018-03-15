@@ -19,8 +19,9 @@ tf.app.flags.DEFINE_string('split', '', 'comma separated fractions of data')
 tf.app.flags.DEFINE_string('lexrank', '', 'indicates to use lexrank')
 tf.app.flags.DEFINE_boolean('glove', False, 'whether to use glove pretrained word vectors')
 
-VOCAB_LIMIT = 100000
-CHUNK_SIZE = 1000 # num examples per chunk, for the chunked data
+VOCAB_LIMIT = 200000
+SENTENCE_START = '<s>'
+SENTENCE_END = '</s>'
 
 
 def lexrankSentences(match):
@@ -47,7 +48,7 @@ def text_to_binary(input_directories, output_filenames, split_fractions):
 
     # create vocab file
     with open('vocab', 'w+') as vocab_f:
-        for word, count in counter.most_common(VOCAB_LIMIT):
+        for word, count in counter.most_common(VOCAB_LIMIT-4):
             vocab_f.write(word + ' ' + str(count) + '\n')
         vocab_f.write('<s> 0\n')
         vocab_f.write('</s> 0\n')
@@ -67,10 +68,12 @@ def convert_files_to_binary(input_filenames, output_filename, counter):
                     else: abstract, s1, s2 = match
 
 					# split & count words
+                    abstract = re.sub(r"\s+", " ", abstract).lower()
+                    s1 = re.sub(r"\s+", " ", s1).lower()
+                    s2 = re.sub(r"\s+", " ", s2).lower()
                     counter.update(' '.join([abstract, s1, s2]).split())
 
 					# then create serialized version of abstract/article for training
-					# abstract = bytearray(abstract, 'utf-8')
                     article = ' '.join([s1, s2])
                     tf_example = example_pb2.Example()
                     tf_example.features.feature['article'].bytes_list.value.extend([article])
