@@ -104,20 +104,19 @@ def clear_files(output_filenames):
 def writeGloveEmbeddings():
     d = {}
     glove_vocab = []
-    if not os.path.exists('glove_embeddings.p') or not os.path.exists('glove_vocab.txt'):
-        with open('glove_pretrained/glove.6B.100d.txt', 'r') as f:
-            content = f.readlines()
-            content = [x.split(" ") for x in content]
-            for wordVector in content:
-                glove_vocab.append(wordVector[0])
-                wordVector[-1] = wordVector[-1].replace('\n', '')
-                d[wordVector[0]] = wordVector[1:]
-        if not os.path.exists('glove_embeddings.p'):
-            pickle.dump(d, open("glove_embeddings.p", "wb" ), 2)
-        if not os.path.exists('glove_vocab.txt'):
-            target2 = open('glove_vocab.txt', 'a')
-            for w in glove_vocab:
-                target2.write("%s\n" % w)
+    with open('glove_pretrained/glove.6B.100d.txt', 'r') as f:
+        content = f.readlines()
+        content = [x.split(" ") for x in content]
+        for wordVector in content:
+            glove_vocab.append(wordVector[0])
+            wordVector[-1] = wordVector[-1].replace('\n', '')
+            d[wordVector[0]] = wordVector[1:]
+    if not os.path.exists('glove_embeddings.p'):
+        pickle.dump(d, open("glove_embeddings.p", "wb" ), protocol=2)
+    if not os.path.exists('glove_vocab.txt'):
+        target2 = open('glove_vocab.txt', 'a')
+        for w in glove_vocab:
+            target2.write("%s\n" % w)
 
 
 def main(unused_args):
