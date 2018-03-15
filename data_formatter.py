@@ -113,14 +113,11 @@ def writeGloveEmbeddings():
                 wordVector[-1] = wordVector[-1].replace('\n', '')
                 d[wordVector[0]] = wordVector[1:]
         if not os.path.exists('glove_embeddings.p'):
-            pickle.dump(d, open("glove_embeddings.p", "wb" ))
+            pickle.dump(d, open("glove_embeddings.p", "wb" ), 2)
         if not os.path.exists('glove_vocab.txt'):
             target2 = open('glove_vocab.txt', 'a')
             for w in glove_vocab:
                 target2.write("%s\n" % w)
-
-
-
 
 
 def main(unused_args):
