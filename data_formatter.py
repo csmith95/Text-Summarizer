@@ -66,10 +66,12 @@ def convert_files_to_binary(input_filenames, output_filename, counter):
                     else: abstract, s1, s2 = match
 
 					# split & count words
+                    abstract = abstract.strip()
+                    s1 = s1.strip()
+                    s2 = s2.strip()
                     counter.update(' '.join([abstract, s1, s2]).split())
 
 					# then create serialized version of abstract/article for training
-					# abstract = bytearray(abstract, 'utf-8')
                     article = ' '.join([s1, s2])
                     tf_example = example_pb2.Example()
                     tf_example.features.feature['article'].bytes_list.value.extend([article])

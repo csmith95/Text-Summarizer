@@ -59,6 +59,15 @@ class Example(object):
     self.dec_input, self.target = self.get_dec_inp_targ_seqs(abs_ids, hps.max_dec_steps, start_decoding, stop_decoding)
     self.dec_len = len(self.dec_input)
 
+    print(abstract)
+    print("\n")
+    print(article)
+    print("\n")
+    print(abstract_words)
+    print("\n")
+    print(article_words)
+    print("\n\n\n")
+
     # If using pointer-generator mode, we need to store some extra info
     if hps.pointer_gen:
       # Store a version of the enc_input where in-article OOVs are represented by their temporary OOV id; also store the in-article OOVs words themselves
