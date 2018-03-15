@@ -66,9 +66,9 @@ def convert_files_to_binary(input_filenames, output_filename, counter):
                     else: abstract, s1, s2 = match
 
 					# split & count words
-                    abstract = abstract.strip()
-                    s1 = s1.strip()
-                    s2 = s2.strip()
+                    abstract = re.sub(r"\s+", " ", text)
+                    s1 = re.sub(r"\s+", " ", s1)
+                    s2 = re.sub(r"\s+", " ", s2)
                     counter.update(' '.join([abstract, s1, s2]).split())
 
 					# then create serialized version of abstract/article for training
@@ -80,24 +80,6 @@ def convert_files_to_binary(input_filenames, output_filename, counter):
                     str_len = len(tf_example_str)
                     serialized_f.write(struct.pack('q', str_len))
                     serialized_f.write(struct.pack('%ds' % str_len, tf_example_str))
-
-
-    # reader = open(output_filename, 'rb')
-    # writer = open('text_data', 'w+')
-    # while True:
-    #     len_bytes = reader.read(8)
-    #     if not len_bytes:
-    #         sys.stderr.write('Done reading\n')
-    #         return
-    #     str_len = struct.unpack('q', len_bytes)[0]
-    #     tf_example_str = struct.unpack('%ds' % str_len, reader.read(str_len))[0]
-    #     tf_example = example_pb2.Example.FromString(tf_example_str)
-    #     examples = []
-    #     for key in tf_example.features.feature:
-    #         examples.append('%s=%s' % (key, tf_example.features.feature[key].bytes_list.value[0]))
-    #     writer.write('%s\n' % '\t'.join(examples))
-    # reader.close()
-    # writer.close()
 
 def get_filenames(input_directories):
   filenames = []
