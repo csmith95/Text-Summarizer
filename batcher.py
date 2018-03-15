@@ -55,6 +55,12 @@ class Example(object):
     abstract_words = abstract.split() # list of strings
     abs_ids = [vocab.word2id(w) for w in abstract_words] # list of word ids; OOVs are represented by the id for UNK token
 
+    print("\n" + "*"*10 + "\n")
+    print("article_text: " + article_words)
+    print("abstract_text: " + abstract_words)
+    print("abstract_ids: ", abs_ids)
+    print("\n")
+
     # Get the decoder input sequence and target sequence
     self.dec_input, self.target = self.get_dec_inp_targ_seqs(abs_ids, hps.max_dec_steps, start_decoding, stop_decoding)
     self.dec_len = len(self.dec_input)
@@ -374,10 +380,6 @@ class Batcher(object):
       try:
         article_text = e.features.feature['article'].bytes_list.value[0] # the article text was saved under the key 'article' in the data files
         abstract_text = e.features.feature['abstract'].bytes_list.value[0] # the abstract text was saved under the key 'abstract' in the data files
-        print("\n" + "*"*10 + "\n")
-        print("article_text: " + article_text)
-        print("abstract_text: " + abstract_text)
-        print("\n")
       except ValueError:
         tf.logging.error('Failed to get article or abstract from example')
         continue
