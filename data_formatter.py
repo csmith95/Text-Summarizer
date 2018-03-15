@@ -124,12 +124,14 @@ def writeGloveEmbeddings():
 
 
 def main(unused_args):
+    if FLAGS.glove == True: 
+        writeGloveEmbeddings()
+        return # don't overwrite other files
+    assert FLAGS.split
     assert FLAGS.in_directories and FLAGS.out_files
     output_filenames = FLAGS.out_files.split(',')
     input_directories = FLAGS.in_directories.split(',')
     clear_files(output_filenames)
-    assert FLAGS.split
-    if FLAGS.glove == True: writeGloveEmbeddings()
     split_fractions = [float(s) for s in FLAGS.split.split(',')]
     assert len(output_filenames) == len(split_fractions)
     text_to_binary(input_directories, output_filenames, split_fractions)
