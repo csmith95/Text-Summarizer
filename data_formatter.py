@@ -82,23 +82,22 @@ def convert_files_to_binary(input_filenames, output_filename, counter):
                     serialized_f.write(struct.pack('%ds' % str_len, tf_example_str))
 
 
-
-    reader = open(output_filename, 'rb')
-    writer = open('text_data', 'w+')
-    while True:
-        len_bytes = reader.read(8)
-        if not len_bytes:
-            sys.stderr.write('Done reading\n')
-            return
-        str_len = struct.unpack('q', len_bytes)[0]
-        tf_example_str = struct.unpack('%ds' % str_len, reader.read(str_len))[0]
-        tf_example = example_pb2.Example.FromString(tf_example_str)
-        examples = []
-        for key in tf_example.features.feature:
-            examples.append('%s=%s' % (key, tf_example.features.feature[key].bytes_list.value[0]))
-        writer.write('%s\n' % '\t'.join(examples))
-    reader.close()
-    writer.close()
+    # reader = open(output_filename, 'rb')
+    # writer = open('text_data', 'w+')
+    # while True:
+    #     len_bytes = reader.read(8)
+    #     if not len_bytes:
+    #         sys.stderr.write('Done reading\n')
+    #         return
+    #     str_len = struct.unpack('q', len_bytes)[0]
+    #     tf_example_str = struct.unpack('%ds' % str_len, reader.read(str_len))[0]
+    #     tf_example = example_pb2.Example.FromString(tf_example_str)
+    #     examples = []
+    #     for key in tf_example.features.feature:
+    #         examples.append('%s=%s' % (key, tf_example.features.feature[key].bytes_list.value[0]))
+    #     writer.write('%s\n' % '\t'.join(examples))
+    # reader.close()
+    # writer.close()
 
 def get_filenames(input_directories):
   filenames = []
