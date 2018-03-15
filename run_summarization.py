@@ -291,6 +291,7 @@ def main(unused_argv):
   vocab = Vocab(FLAGS.vocab_path, FLAGS.vocab_size) # create a vocabulary
   glove_vocab = []
   if FLAGS.glove:
+      assert os.path.exists('glove_vocab.txt') and os.path.exists('glove_embeddings.p')
       glove_vocab = gloveVocab()
       print "Finished constructing GloVe vocabulary of ", len(glove_vocab), " total words."
 
