@@ -46,7 +46,7 @@ def text_to_binary(input_directories, output_filenames, split_fractions):
 
     # create vocab file
     with open('vocab', 'w+') as vocab_f:
-        for word, count in counter.most_common(VOCAB_LIMIT):
+        for word, count in counter.most_common(VOCAB_LIMIT-4):
             vocab_f.write(word + ' ' + str(count) + '\n')
         vocab_f.write('<s> 0\n')
         vocab_f.write('</s> 0\n')
