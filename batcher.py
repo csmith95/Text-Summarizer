@@ -56,8 +56,8 @@ class Example(object):
     abs_ids = [vocab.word2id(w) for w in abstract_words] # list of word ids; OOVs are represented by the id for UNK token
 
     print("\n" + "*"*10 + "\n")
-    print("article_text: " + article_words)
-    print("abstract_text: " + abstract_words)
+    print("article_text: ", article_words)
+    print("abstract_text: ", abstract_words)
     print("abstract_ids: ", abs_ids)
     print("\n")
 
