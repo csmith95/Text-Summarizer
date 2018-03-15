@@ -377,7 +377,7 @@ class Batcher(object):
         print("\n" + "*"*10 + "\n")
         print("article_text: " + article_text)
         print("abstract_text: " + abstract_text)
-        print("\n\n\n\n")
+        print("\n")
       except ValueError:
         tf.logging.error('Failed to get article or abstract from example')
         continue
