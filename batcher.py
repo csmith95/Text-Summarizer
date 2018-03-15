@@ -28,7 +28,7 @@ import data
 class Example(object):
   """Class representing a train/val/test example for text summarization."""
 
-  def __init__(self, article, abstract_sentences, vocab, hps):
+  def __init__(self, article, abstract_sentences, vocab, hps, glove_vocab):
     """Initializes the Example, performing tokenization and truncation to produce the encoder, decoder and target sequences, which are stored in self.
 
     Args:
@@ -38,6 +38,7 @@ class Example(object):
       hps: hyperparameters
     """
     self.hps = hps
+    self.glove_vocab = glove_vocab
 
     # Get ids of special tokens
     start_decoding = vocab.word2id(data.START_DECODING)
@@ -48,12 +49,36 @@ class Example(object):
     if len(article_words) > hps.max_enc_steps:
       article_words = article_words[:hps.max_enc_steps]
     self.enc_len = len(article_words) # store the length after truncation but before padding
-    self.enc_input = [vocab.word2id(w) for w in article_words] # list of word ids; OOVs are represented by the id for UNK token
+
+    #### Added by Thomas for Glove
+    self.enc_input = []
+    if len(glove_vocab) > 0:
+        for w in article_words:
+            if w in glove_vocab:
+                self.enc_input.append(vocab.word2id(w))
+            else:
+                self.enc_input.append(vocab.word2id('[UNK]'))
+    else:
+        self.enc_input = [vocab.word2id(w) for w in article_words] # list of word ids; OOVs are represented by the id for UNK token
+    ####
+    # self.enc_input = [vocab.word2id(w) for w in article_words] # list of word ids; OOVs are represented by the id for UNK token
 
     # Process the abstract
     abstract = ' '.join(abstract_sentences) # string
     abstract_words = abstract.split() # list of strings
-    abs_ids = [vocab.word2id(w) for w in abstract_words] # list of word ids; OOVs are represented by the id for UNK token
+
+    #### Added by Thomas for Glove
+    abs_ids = []
+    if len(glove_vocab) > 0:
+        for w in abstract_words:
+            if w in glove_vocab:
+                abs_ids.append(vocab.word2id(w))
+            else:
+                abs_ids.append(vocab.word2id('[UNK]'))
+    else:
+        abs_ids = [vocab.word2id(w) for w in abstract_words] # list of word ids; OOVs are represented by the id for UNK token
+    ###
+    # abs_ids = [vocab.word2id(w) for w in abstract_words] # list of word ids; OOVs are represented by the id for UNK token
 
     # Get the decoder input sequence and target sequence
     self.dec_input, self.target = self.get_dec_inp_targ_seqs(abs_ids, hps.max_dec_steps, start_decoding, stop_decoding)
@@ -219,7 +244,7 @@ class Batcher(object):
 
   BATCH_QUEUE_MAX = 100 # max number of batches the batch_queue can hold
 
-  def __init__(self, data_path, vocab, hps, single_pass):
+  def __init__(self, data_path, vocab, hps, glove_vocab, single_pass):
     """Initialize the batcher. Start threads that process the data into batches.
 
     Args:
@@ -230,6 +255,7 @@ class Batcher(object):
     """
     self._data_path = data_path
     self._vocab = vocab
+    self.glove_vocab = glove_vocab
     self._hps = hps
     self._single_pass = single_pass
 
@@ -303,7 +329,7 @@ class Batcher(object):
           raise Exception("single_pass mode is off but the example generator is out of data; error.")
 
       abstract_sentences = [sent.strip() for sent in data.abstract2sents(abstract)] # Use the <s> and </s> tags in abstract to get a list of sentences.
-      example = Example(article, abstract_sentences, self._vocab, self._hps) # Process into an Example.
+      example = Example(article, abstract_sentences, self._vocab, self._hps, self.glove_vocab) # Process into an Example.
       self._example_queue.put(example) # place the Example in the example queue.
 
 

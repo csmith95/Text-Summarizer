@@ -45,7 +45,8 @@ tf.app.flags.DEFINE_string('exp_name', '', 'Name for experiment. Logs will be sa
 
 # Hyperparameters
 tf.app.flags.DEFINE_integer('hidden_dim', 256, 'dimension of RNN hidden states')
-tf.app.flags.DEFINE_integer('emb_dim', 128, 'dimension of word embeddings')
+# tf.app.flags.DEFINE_integer('emb_dim', 128, 'dimension of word embeddings')
+tf.app.flags.DEFINE_integer('emb_dim', 100, 'dimension of word embeddings')
 tf.app.flags.DEFINE_integer('batch_size', 16, 'minibatch size')
 tf.app.flags.DEFINE_integer('max_enc_steps', 400, 'max timesteps of encoder (max source text tokens)')
 tf.app.flags.DEFINE_integer('max_dec_steps', 100, 'max timesteps of decoder (max summary tokens)')
@@ -71,6 +72,8 @@ tf.app.flags.DEFINE_boolean('restore_best_model', False, 'Restore the best model
 
 # Debugging. See https://www.tensorflow.org/programmers_guide/debugger
 tf.app.flags.DEFINE_boolean('debug', False, "Run in tensorflow's debug mode (watches for NaN/inf values)")
+
+tf.app.flags.DEFINE_boolean('glove', False, 'Whether to use pretrained glove vectors')
 
 
 
@@ -155,7 +158,7 @@ def setup_training(model, batcher):
   train_dir = os.path.join(FLAGS.log_root, "train")
   if not os.path.exists(train_dir): os.makedirs(train_dir)
 
-  model.build_graph() # build the graph
+  model.build_graph(FLAGS.glove) # build the graph
   if FLAGS.convert_to_coverage_model:
     assert FLAGS.coverage, "To convert your non-coverage model to a coverage model, run with convert_to_coverage_model=True and coverage=True"
     convert_to_coverage_model()
@@ -172,8 +175,10 @@ def setup_training(model, batcher):
                      global_step=model.global_step)
   summary_writer = sv.summary_writer
   tf.logging.info("Preparing or waiting for session...")
+  t0 = time.time()
   sess_context_manager = sv.prepare_or_wait_for_session(config=util.get_config())
-  tf.logging.info("Created session.")
+  t1 = time.time()
+  tf.logging.info("Created session in " + str(t1 - t0) + " seconds.")
   try:
     run_training(model, batcher, sess_context_manager, sv, summary_writer) # this is an infinite loop until interrupted
   except KeyboardInterrupt:
@@ -218,7 +223,7 @@ def run_training(model, batcher, sess_context_manager, sv, summary_writer):
 
 def run_eval(model, batcher, vocab):
   """Repeatedly runs eval iterations, logging to screen and writing summaries. Saves the model with the best loss seen so far."""
-  model.build_graph() # build the graph
+  model.build_graph(FLAGS.glove) # build the graph
   saver = tf.train.Saver(max_to_keep=3) # we will keep 3 best checkpoints at a time
   sess = tf.Session(config=util.get_config())
   eval_dir = os.path.join(FLAGS.log_root, "eval") # make a subdir of the root dir for eval data
@@ -263,6 +268,10 @@ def run_eval(model, batcher, vocab):
     if train_step % 100 == 0:
       summary_writer.flush()
 
+def gloveVocab():
+    print "Reading in GloVe vocabulary..."
+    with open('glove_vocab.txt', 'r') as f:
+        return f.read().splitlines()
 
 def main(unused_argv):
   if len(unused_argv) != 1: # prints a message if you've entered flags incorrectly
@@ -280,6 +289,10 @@ def main(unused_argv):
       raise Exception("Logdir %s doesn't exist. Run in train mode to create it." % (FLAGS.log_root))
 
   vocab = Vocab(FLAGS.vocab_path, FLAGS.vocab_size) # create a vocabulary
+  glove_vocab = []
+  if FLAGS.glove:
+      glove_vocab = gloveVocab()
+      print "Finished constructing GloVe vocabulary of ", len(glove_vocab), " total words."
 
   # If in decode mode, set batch_size = beam_size
   # Reason: in decode mode, we decode one example at a time.
@@ -300,7 +313,7 @@ def main(unused_argv):
   hps = namedtuple("HParams", hps_dict.keys())(**hps_dict)
 
   # Create a batcher object that will create minibatches of data
-  batcher = Batcher(FLAGS.data_path, vocab, hps, single_pass=FLAGS.single_pass)
+  batcher = Batcher(FLAGS.data_path, vocab, hps, glove_vocab, single_pass=FLAGS.single_pass)
 
   tf.set_random_seed(111) # a seed value for randomness
   if hps.mode == 'train':

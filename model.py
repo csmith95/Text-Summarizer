@@ -22,6 +22,7 @@ import numpy as np
 import tensorflow as tf
 from attention_decoder import attention_decoder
 from tensorflow.contrib.tensorboard.plugins import projector
+import pickle
 
 FLAGS = tf.app.flags.FLAGS
 
@@ -196,11 +197,28 @@ class SummarizationModel(object):
     embedding.metadata_path = vocab_metadata_path
     projector.visualize_embeddings(summary_writer, config)
 
-  def _add_seq2seq(self):
+  # def buildGloveDict(self):
+  #     glove_vectors = {}
+  #     with open('glove_pretrained/glove.6B.100d.txt', 'r') as f:
+  #         content = f.readlines()
+  #         content = [x.split(" ") for x in content]
+  #         for wordVector in content:
+  #             wordVector[-1] = wordVector[-1].replace('\n', '')
+  #             glove_vectors[wordVector[0]] = wordVector[1:]
+  #     return glove_vectors
+
+
+  def _add_seq2seq(self, glove_pretrained):
     """Add the whole sequence-to-sequence model to the graph."""
     hps = self._hps
     vsize = self._vocab.size() # size of the vocabulary
-
+    glove_vectors = {}
+    if glove_pretrained == True:
+        print "Reading in GloVe dictionary..."
+        t0 = time.time()
+        glove_vectors = pickle.load(open("glove_embeddings.p", "rb" ))
+        t1 = time.time()
+        print "Built GloVe dictionary in ", str(t1-t0), " seconds."
     with tf.variable_scope('seq2seq'):
       # Some initializers
       self.rand_unif_init = tf.random_uniform_initializer(-hps.rand_unif_init_mag, hps.rand_unif_init_mag, seed=123)
@@ -209,6 +227,22 @@ class SummarizationModel(object):
       # Add embedding matrix (shared by the encoder and decoder inputs)
       with tf.variable_scope('embedding'):
         embedding = tf.get_variable('embedding', [vsize, hps.emb_dim], dtype=tf.float32, initializer=self.trunc_norm_init)
+
+        if glove_pretrained == True:
+            print "Initializing embeddings with GloVe pretrained vectors..."
+            t0 = time.time()
+            vectors = [0]*vsize
+            for word, index in self._vocab._word_to_id.iteritems():
+                if word in glove_vectors:
+                    vectors[index] = tf.constant([float(i) for i in glove_vectors[word]])
+                else:
+                    # vectors[index] = tf.get_variable(str(index), shape=[hps.emb_dim],dtype=tf.float32, initializer=self.trunc_norm_init)
+                    # vectors[index] = tf.truncated_normal_initializer(shape=[hps.emb_dim],dtype=tf.float32,stddev=hps.trunc_norm_init_std)
+                    vectors[index] = tf.truncated_normal(shape=[hps.emb_dim])
+            embeddings = tf.stack(vectors)
+            t1 = time.time()
+            print "Built GloVe embeddings matrix in ", str(t1-t0), " seconds."
+
         if hps.mode=="train": self._add_emb_vis(embedding) # add to tensorboard
         emb_enc_inputs = tf.nn.embedding_lookup(embedding, self._enc_batch) # tensor with shape (batch_size, max_enc_steps, emb_size)
         emb_dec_inputs = [tf.nn.embedding_lookup(embedding, x) for x in tf.unstack(self._dec_batch, axis=1)] # list length max_dec_steps containing shape (batch_size, emb_size)
@@ -305,13 +339,13 @@ class SummarizationModel(object):
       self._train_op = optimizer.apply_gradients(zip(grads, tvars), global_step=self.global_step, name='train_step')
 
 
-  def build_graph(self):
+  def build_graph(self, glove_pretrained):
     """Add the placeholders, model, global step, train_op and summaries to the graph"""
     tf.logging.info('Building graph...')
     t0 = time.time()
     self._add_placeholders()
     with tf.device("/gpu:0"):
-      self._add_seq2seq()
+      self._add_seq2seq(glove_pretrained)
     self.global_step = tf.Variable(0, name='global_step', trainable=False)
     if self._hps.mode == 'train':
       self._add_train_op()

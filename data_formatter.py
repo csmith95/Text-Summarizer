@@ -9,13 +9,15 @@ from os.path import isfile, join
 from tensorflow.core.example import example_pb2
 from numpy.random import shuffle as random_shuffle
 from lexrank import lexrank
+import pickle
 
 
 FLAGS = tf.app.flags.FLAGS
 tf.app.flags.DEFINE_string('in_directories', '', 'path to directory')
 tf.app.flags.DEFINE_string('out_files', '', 'comma separated paths to files')
 tf.app.flags.DEFINE_string('split', '', 'comma separated fractions of data')
-tf.app.flags.DEFINE_string('lexrank', '', 'bool indicating whether to use lexrank')
+tf.app.flags.DEFINE_string('lexrank', '', 'indicates to use lexrank')
+tf.app.flags.DEFINE_boolean('glove', False, 'whether to use glove pretrained word vectors')
 
 VOCAB_LIMIT = 100000
 CHUNK_SIZE = 1000 # num examples per chunk, for the chunked data
@@ -96,12 +98,33 @@ def clear_files(output_filenames):
     except OSError:
         pass
 
+def writeGloveEmbeddings():
+    d = {}
+    glove_vocab = []
+    with open('glove_pretrained/glove.6B.100d.txt', 'r') as f:
+        content = f.readlines()
+        content = [x.split(" ") for x in content]
+        for wordVector in content:
+            glove_vocab.append(wordVector[0])
+            wordVector[-1] = wordVector[-1].replace('\n', '')
+            d[wordVector[0]] = wordVector[1:]
+    pickle.dump(d, open("glove_embeddings.p", "wb" ))
+    if os.path.exists('glove_vocab.txt') == False:
+        target2 = open('glove_vocab.txt', 'a')
+        for w in glove_vocab:
+            target2.write("%s\n" % w)
+
+
+
+
+
 def main(unused_args):
     assert FLAGS.in_directories and FLAGS.out_files
     output_filenames = FLAGS.out_files.split(',')
     input_directories = FLAGS.in_directories.split(',')
     clear_files(output_filenames)
     assert FLAGS.split
+    if FLAGS.glove == True: writeGloveEmbeddings()
     split_fractions = [float(s) for s in FLAGS.split.split(',')]
     assert len(output_filenames) == len(split_fractions)
     text_to_binary(input_directories, output_filenames, split_fractions)
