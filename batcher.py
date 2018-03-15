@@ -59,13 +59,13 @@ class Example(object):
     self.dec_input, self.target = self.get_dec_inp_targ_seqs(abs_ids, hps.max_dec_steps, start_decoding, stop_decoding)
     self.dec_len = len(self.dec_input)
 
-    print(abstract)
+    print("abstract: ", abstract)
     print("\n")
-    print(article)
+    print("article: ", article)
     print("\n")
-    print(abstract_words)
+    print("abs_words: ", abstract_words)
     print("\n")
-    print(article_words)
+    print("article_words: ", article_words)
     print("\n\n\n")
 
     # If using pointer-generator mode, we need to store some extra info
