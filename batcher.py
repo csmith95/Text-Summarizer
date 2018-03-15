@@ -55,24 +55,9 @@ class Example(object):
     abstract_words = abstract.split() # list of strings
     abs_ids = [vocab.word2id(w) for w in abstract_words] # list of word ids; OOVs are represented by the id for UNK token
 
-    print("\n" + "*"*10 + "\n")
-    print("article_text: ", article_words)
-    print("abstract_text: ", abstract_words)
-    print("abstract_ids: ", abs_ids)
-    print("\n")
-
     # Get the decoder input sequence and target sequence
     self.dec_input, self.target = self.get_dec_inp_targ_seqs(abs_ids, hps.max_dec_steps, start_decoding, stop_decoding)
     self.dec_len = len(self.dec_input)
-
-    # print("abstract: ", abstract)
-    # print("\n")
-    # print("article: ", article)
-    # print("\n")
-    # print("abs_words: ", abstract_words)
-    # print("\n")
-    # print("article_words: ", article_words)
-    # print("\n\n\n")
 
     # If using pointer-generator mode, we need to store some extra info
     if hps.pointer_gen:
