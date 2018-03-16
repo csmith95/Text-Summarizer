@@ -44,7 +44,7 @@ class BeamSearchDecoder(object):
       vocab: Vocabulary object
     """
     self._model = model
-    self._model.build_graph()
+    self._model.build_graph(FLAGS.glove)
     self._batcher = batcher
     self._vocab = vocab
     self._saver = tf.train.Saver() # we use this to load checkpoints for decoding
