@@ -216,7 +216,7 @@ class SummarizationModel(object):
     if glove_pretrained == True:
         print "Reading in GloVe dictionary..."
         t0 = time.time()
-        glove_vectors = pickle.load(open("glove_embeddings.p", "rb" ))
+        glove_vectors = pickle.load(open("glove_embeddings.p", "rb" ), protocol=2)
         t1 = time.time()
         print "Built GloVe dictionary in ", str(t1-t0), " seconds."
     with tf.variable_scope('seq2seq'):
