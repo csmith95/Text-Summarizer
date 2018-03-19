@@ -58,7 +58,7 @@ def text_to_binary(input_directories, output_filenames, split_fractions):
 def modify(s):
     s = re.sub(r"\s+", " ", s).lower()
     s = re.sub(r"[()\",\[\_:;\]]", "", s)  # strip parentheses, quotations, commas
-    if s[-1] in ['.', '?', '!']:
+    if len(s) > 0 and s[-1] in ['.', '?', '!']:
           s = s[:-1]
     return s
 
@@ -78,6 +78,7 @@ def convert_files_to_binary(input_filenames, output_filename, counter):
                     abstract = modify(abstract)
                     s1 = modify(s1)
                     s2 = modify(s2)
+                    if len(abstract) == 0 or len(s1) == 0 or len(s2) == 0: continue
                     counter.update(' '.join([abstract, s1, s2]).split())
 
 					# then create serialized version of abstract/article for training
