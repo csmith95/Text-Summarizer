@@ -58,6 +58,8 @@ def text_to_binary(input_directories, output_filenames, split_fractions):
 def modify(s):
     s = re.sub(r"\s+", " ", s).lower()
     s = re.sub(r"[()\",\[\_:;]]", "", s)  # strip parentheses, quotations, commas
+    if w[-1] in ['.', '?', '!']:
+          w = w[:-1]
     return s
 
 def convert_files_to_binary(input_filenames, output_filename, counter):

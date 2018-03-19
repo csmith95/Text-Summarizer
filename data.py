@@ -64,7 +64,7 @@ class Vocab(object):
           continue
 
         w = pieces[0]
-        w = w.strip().lower()
+        w = re.sub(r"\s+", " ", w).lower()
         w = re.sub(r"[()\",\[\_:;]]", "", w)  # strip parentheses, quotations, commas
         if len(w) == 0: continue
         if w[-1] in ['.', '?', '!']:
