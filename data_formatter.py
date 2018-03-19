@@ -55,6 +55,11 @@ def text_to_binary(input_directories, output_filenames, split_fractions):
         vocab_f.write('<UNK> 0\n')
         vocab_f.write('<PAD> 0\n')
 
+def modify(s):
+    s = re.sub(r"\s+", " ", s).lower()
+    s = re.sub(r"[()\",\[\_\]]", "", s)  # strip parentheses, quotations, commas
+    return s
+
 def convert_files_to_binary(input_filenames, output_filename, counter):
     with open(output_filename, 'wb') as serialized_f:
         for filename in input_filenames:
@@ -66,11 +71,6 @@ def convert_files_to_binary(input_filenames, output_filename, counter):
 
                     if FLAGS.lexrank == True: abstract, s1, s2 = lexrankSentences(match)
                     else: abstract, s1, s2 = match
-
-					def modify(s):
-                        s = re.sub(r"\s+", " ", s).lower()
-                        s = re.sub(r"[()\",\[\_\]]", "", s)  # strip parentheses, quotations, commas
-                        return s
 
                     # split & count words
                     abstract = modify(abstract)
