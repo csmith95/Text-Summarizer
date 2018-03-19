@@ -50,7 +50,8 @@ class Example(object):
       article_words = article_words[:hps.max_enc_steps]
     self.enc_len = len(article_words) # store the length after truncation but before padding
 
-    print(article_words + "\n\n")
+    print(article_words)
+    print("\n\n")
 
     #### Added by Thomas for Glove
     self.enc_input = []
