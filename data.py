@@ -63,6 +63,7 @@ class Vocab(object):
           print 'Warning: incorrectly formatted line in vocabulary file: %s\n' % line
           continue
 
+        w = pieces[0]
         w = w.strip().lower()
         w = re.sub(r"[()\",\[\_:;]]", "", w)  # strip parentheses, quotations, commas
         if len(w) == 0: continue
