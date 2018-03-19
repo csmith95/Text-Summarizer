@@ -50,9 +50,6 @@ class Example(object):
       article_words = article_words[:hps.max_enc_steps]
     self.enc_len = len(article_words) # store the length after truncation but before padding
 
-    print(article_words)
-    print("\n\n")
-
     #### Added by Thomas for Glove
     self.enc_input = []
     if len(glove_vocab) > 0:
@@ -83,7 +80,6 @@ class Example(object):
     else:
         abs_ids = [vocab.word2id(w) for w in abstract_words] # list of word ids; OOVs are represented by the id for UNK token
     ###
-    # abs_ids = [vocab.word2id(w) for w in abstract_words] # list of word ids; OOVs are represented by the id for UNK token
 
     # Get the decoder input sequence and target sequence
     self.dec_input, self.target = self.get_dec_inp_targ_seqs(abs_ids, hps.max_dec_steps, start_decoding, stop_decoding)
@@ -104,6 +100,9 @@ class Example(object):
     self.original_article = article
     self.original_abstract = abstract
     self.original_abstract_sents = abstract_sentences
+
+    print("\n******* : ", article_words)
+    print("\n ********")
 
 
   def get_dec_inp_targ_seqs(self, sequence, max_len, start_id, stop_id):

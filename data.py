@@ -141,7 +141,6 @@ def example_generator(data_path, single_pass):
         if not len_bytes: break # finished reading this file
         str_len = struct.unpack('q', len_bytes)[0]
         example_str = struct.unpack('%ds' % str_len, reader.read(str_len))[0]
-        print(example_str)
         yield example_pb2.Example.FromString(example_str)
     if single_pass:
       print "example_generator completed reading all datafiles. No more data."
@@ -234,17 +233,7 @@ def abstract2sents(abstract):
 
   Returns:
     sents: List of sentence strings (no tags)"""
-  # cur = 0
-  # sents = []
-  # while True:
-  #   try:
-  #     start_p = abstract.index(SENTENCE_START, cur)
-  #     end_p = abstract.index(SENTENCE_END, start_p + 1)
-  #     cur = end_p + len(SENTENCE_END)
-  #     sents.append(abstract[start_p+len(SENTENCE_START):end_p])
-  #   except ValueError as e: # no more sentences
-  #     return sents
-  return re.split(r'[.?!]', abstract)
+  return [abstract]
 
 
 def show_art_oovs(article, vocab):
