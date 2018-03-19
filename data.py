@@ -64,9 +64,11 @@ class Vocab(object):
           continue
 
         w = w.lower()
-        w = re.sub(r"[()\",]", "", w)  # strip parentheses, quotations, commas
+        w = re.sub(r"[()\",\[\_]]", "", w)  # strip parentheses, quotations, commas
+        if len(w) == 0: continue
         if w[-1] in ['.', '?', '!']:
           w = w[:-1]
+
         if w in [SENTENCE_START, SENTENCE_END, UNKNOWN_TOKEN, PAD_TOKEN, START_DECODING, STOP_DECODING]:
           raise Exception('<s>, </s>, [UNK], [PAD], [START] and [STOP] shouldn\'t be in the vocab file, but %s is' % w)
 
