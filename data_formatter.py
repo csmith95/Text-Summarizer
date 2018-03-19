@@ -57,7 +57,7 @@ def text_to_binary(input_directories, output_filenames, split_fractions):
 
 def modify(s):
     s = re.sub(r"\s+", " ", s).lower()
-    s = re.sub(r"[()\",\[\_:;]]", "", s)  # strip parentheses, quotations, commas
+    s = re.sub(r"[()\",\[\_:;\]]", "", s)  # strip parentheses, quotations, commas
     if s[-1] in ['.', '?', '!']:
           s = s[:-1]
     return s
