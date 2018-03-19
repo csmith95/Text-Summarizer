@@ -82,8 +82,7 @@ def convert_files_to_binary(input_filenames, output_filename, counter):
                     counter.update(' '.join([abstract, s1, s2]).split())
 
 					# then create serialized version of abstract/article for training
-
-                    article = SENTENCE_START + s1 + SENTENCE_END + SENTENCE_START + s2 + SENTENCE_END
+                    article = ' '.join([s1, s2])
                     tf_example = example_pb2.Example()
                     tf_example.features.feature['article'].bytes_list.value.extend([article])
                     tf_example.features.feature['abstract'].bytes_list.value.extend([abstract])
