@@ -67,11 +67,17 @@ def convert_files_to_binary(input_filenames, output_filename, counter):
                     if FLAGS.lexrank == True: abstract, s1, s2 = lexrankSentences(match)
                     else: abstract, s1, s2 = match
 
-					# split & count words
-                    abstract = re.sub(r"\s+", " ", abstract).lower()
-                    s1 = re.sub(r"\s+", " ", s1).lower()
-                    s2 = re.sub(r"\s+", " ", s2).lower()
+					def modify(s):
+                        s = re.sub(r"\s+", " ", s).lower()
+                        s = re.sub(r"[()\",\[\_\]]", "", s)  # strip parentheses, quotations, commas
+                        return s
+
+                    # split & count words
+                    abstract = modify(abstract)
+                    s1 = modify(s1)
+                    s2 = modify(s2)
                     counter.update(' '.join([abstract, s1, s2]).split())
+
 
 					# then create serialized version of abstract/article for training
                     article = ' '.join([s1, s2])
