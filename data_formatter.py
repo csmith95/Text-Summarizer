@@ -122,7 +122,7 @@ def writeGloveEmbeddings():
 def main(unused_args):
     if FLAGS.glove == True: 
         writeGloveEmbeddings()
-        return # don't overwrite other files
+        # return # don't overwrite other files
     assert FLAGS.split
     assert FLAGS.in_directories and FLAGS.out_files
     output_filenames = FLAGS.out_files.split(',')
