@@ -55,10 +55,8 @@ class Example(object):
     if len(glove_vocab) > 0:
         for w in article_words:
             if w in glove_vocab:
-                print("word found in glove: ", w)
                 self.enc_input.append(vocab.word2id(w))
             else:
-                print("word NOT found: ", w)
                 self.enc_input.append(vocab.word2id('[UNK]'))
     else:
         self.enc_input = [vocab.word2id(w) for w in article_words] # list of word ids; OOVs are represented by the id for UNK token
