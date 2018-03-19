@@ -57,14 +57,18 @@ class Vocab(object):
     # Read the vocab file and add words up to max_size
     with open(vocab_file, 'r') as vocab_f:
       for line in vocab_f:
-        pieces = line.split()
+        line = line.strip()
         if len(pieces) != 2:
           print 'Warning: incorrectly formatted line in vocabulary file: %s\n' % line
           continue
-        w = pieces[0]
-        # if w in [SENTENCE_START, SENTENCE_END, UNKNOWN_TOKEN, PAD_TOKEN, START_DECODING, STOP_DECODING]:
-        #   raise Exception('<s>, </s>, [UNK], [PAD], [START] and [STOP] shouldn\'t be in the vocab file, but %s is' % w)
+
         w = w.lower()
+        w = re.sub(r"[()\",]", "", w)  # strip parentheses, quotations, commas
+        if w[-1] in ['.', '?', '!']:
+          w = w[:-1]
+        if w in [SENTENCE_START, SENTENCE_END, UNKNOWN_TOKEN, PAD_TOKEN, START_DECODING, STOP_DECODING]:
+          raise Exception('<s>, </s>, [UNK], [PAD], [START] and [STOP] shouldn\'t be in the vocab file, but %s is' % w)
+
         if w in self._word_to_id:
           raise Exception('Duplicated word in vocabulary file: %s' % w)
         self._word_to_id[w] = self._count
@@ -138,6 +142,7 @@ def example_generator(data_path, single_pass):
         if not len_bytes: break # finished reading this file
         str_len = struct.unpack('q', len_bytes)[0]
         example_str = struct.unpack('%ds' % str_len, reader.read(str_len))[0]
+        print(example_str)
         yield example_pb2.Example.FromString(example_str)
     if single_pass:
       print "example_generator completed reading all datafiles. No more data."
