@@ -92,7 +92,7 @@ def lexrank_graph(similarity_matrix, cos_th, alpha):
     return lexrank
 
 
-def lexrank(sentences, num_sentences=2, word_thr=100, sent_split=False, word_split=False, stemming=False, cos_th=0.05, alpha=0.9):
+def lexrank(sentences, num_sentences=2, word_thr=200, sent_split=False, word_split=False, stemming=False, cos_th=0.05, alpha=0.9):
     # sentence_tokenize
     if sent_split:
         sentences = sent_tokenize(sentences)

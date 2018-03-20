@@ -31,8 +31,11 @@ def lexrankSentences(match):
     text = pattern3.sub(" ",text)
     sentences = pattern2.findall(text)
     result = lexrank(sentences)
-    s1 = result[0]
-    s2 = result[1]
+    s1 = ''
+    s2 = ''
+    if len(result) > 2:
+        s1 = result[0]
+        s2 = result[1]
     return abstract, s1, s2
 
 def text_to_binary(input_directories, output_filenames, split_fractions):
@@ -81,11 +84,11 @@ def convert_files_to_binary(input_filenames, output_filename, counter):
                     abstract = modify(abstract)
                     s1 = modify(s1)
                     s2 = modify(s2)
-                    if len(abstract) == 0 or len(s1) == 0 or len(s2) == 0: continue
-                    counter.update(' '.join([abstract, s1, s2]).split())
                     print(s1)
                     print(s2)
                     print("\n\n")
+                    if len(abstract) == 0 or len(s1) == 0 or len(s2) == 0: continue
+                    counter.update(' '.join([abstract, s1, s2]).split())
 
 					# then create serialized version of abstract/article for training
                     article = ' '.join([s1, s2])
