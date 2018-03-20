@@ -98,7 +98,6 @@ def lexrank(sentences, num_sentences=2, word_thr=200, sent_split=False, word_spl
         sentences = sent_tokenize(sentences)
     # retain original
     original_sentences = sentences
-    print(original_sentences)
     # word_tokenize
     if word_split:
         sentences = [" ".join(word_tokenize(sent)) for sent in sentences]
