@@ -72,8 +72,12 @@ def convert_files_to_binary(input_filenames, output_filename, counter):
                     pattern = re.compile(r'<HEADLINE>\n([\w\W]+?)\n</HEADLINE>[\w\W]+?<TEXT>\n([\w\W]+?)\n</TEXT>')
                 for match in pattern.findall(input_f.read()):
 
-                    if FLAGS.lexrank == True: abstract, s1, s2 = lexrankSentences(match)
-                    else: abstract, s1, s2 = match
+                    print("h")
+                    if FLAGS.lexrank == True: 
+                        print("lexrank true")
+                        abstract, s1, s2 = lexrankSentences(match)
+                    else: 
+                        abstract, s1, s2 = match
 
                     # split & count words
                     abstract = modify(abstract)
