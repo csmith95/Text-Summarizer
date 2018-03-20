@@ -16,7 +16,7 @@ FLAGS = tf.app.flags.FLAGS
 tf.app.flags.DEFINE_string('in_directories', '', 'path to directory')
 tf.app.flags.DEFINE_string('out_files', '', 'comma separated paths to files')
 tf.app.flags.DEFINE_string('split', '', 'comma separated fractions of data')
-tf.app.flags.DEFINE_string('lexrank', '', 'indicates to use lexrank')
+tf.app.flags.DEFINE_string('lexrank', False, 'indicates to use lexrank')
 tf.app.flags.DEFINE_boolean('glove', False, 'whether to use glove pretrained word vectors')
 
 VOCAB_LIMIT = 200000
