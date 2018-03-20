@@ -129,6 +129,7 @@ def lexrank(sentences, num_sentences=2, word_thr=100, sent_split=False, word_spl
             else:
                 break
     # return " ".join(lexrank_sentences)
+    print lexrank_sentences
     return lexrank_sentences
 
 
