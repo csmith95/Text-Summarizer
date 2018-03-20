@@ -83,6 +83,9 @@ def convert_files_to_binary(input_filenames, output_filename, counter):
                     s2 = modify(s2)
                     if len(abstract) == 0 or len(s1) == 0 or len(s2) == 0: continue
                     counter.update(' '.join([abstract, s1, s2]).split())
+                    print(s1)
+                    print(s2)
+                    print("\n\n")
 
 					# then create serialized version of abstract/article for training
                     article = ' '.join([s1, s2])
