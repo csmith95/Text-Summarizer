@@ -116,7 +116,7 @@ def lexrank(sentences, num_sentences=2, word_thr=100, sent_split=False, word_spl
     word_counter = 0
     for num, score in sorted(lexrank.items(), key=lambda x:x[1], reverse=True):
         lexrank_sentences.append(original_sentences[num])
-        if len(lexrank_sentences >= numSentences):
+        if len(lexrank_sentences >= num_sentences):
             break
         length = len(original_sentences[num].strip().split())
         if word_counter+length <= word_thr:
