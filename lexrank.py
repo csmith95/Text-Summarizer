@@ -103,9 +103,9 @@ def lexrank(sentences, num_sentences=2, word_thr=100, sent_split=False, word_spl
     if word_split:
         sentences = [" ".join(word_tokenize(sent)) for sent in sentences]
     # stemming
-    # if stemming:
-    #     stemmer = stem.PorterStemmer()
-    #     sentences = [stemmer.stem(sent) for sent in sentences]
+    if stemming:
+        stemmer = stem.PorterStemmer()
+        sentences = [stemmer.stem(sent) for sent in sentences]
     # make all words lowercase for calc tf-idf & lexrank
     sentences_lower = [sent.lower() for sent in sentences]
     # construct idf dictionary
@@ -118,16 +118,16 @@ def lexrank(sentences, num_sentences=2, word_thr=100, sent_split=False, word_spl
         lexrank_sentences.append(original_sentences[num])
         if len(lexrank_sentences >= numSentences):
             break
-        # length = len(original_sentences[num].strip().split())
-        # if word_counter+length <= word_thr:
-        #     word_counter += length
-        #     lexrank_sentences.append(original_sentences[num])
-        # else:
-        #     # avoid to extract nothing if 1st sentence of lexrank score is longer than word_thr
-        #     if word_counter == 0:
-        #         continue
-        #     else:
-        #         break
+        length = len(original_sentences[num].strip().split())
+        if word_counter+length <= word_thr:
+            word_counter += length
+            lexrank_sentences.append(original_sentences[num])
+        else:
+            # avoid to extract nothing if 1st sentence of lexrank score is longer than word_thr
+            if word_counter == 0:
+                continue
+            else:
+                break
     # return " ".join(lexrank_sentences)
     return lexrank_sentences
 
