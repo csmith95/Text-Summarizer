@@ -31,7 +31,8 @@ def lexrankSentences(match):
     text = pattern3.sub(" ",text)
     sentences = pattern2.findall(text)
     result = lexrank(sentences)
-    print(result)
+    s1 = result[0]
+    s2 = result[1]
     return abstract, s1, s2
 
 def text_to_binary(input_directories, output_filenames, split_fractions):
@@ -71,10 +72,7 @@ def convert_files_to_binary(input_filenames, output_filename, counter):
                 if FLAGS.lexrank == True:
                     pattern = re.compile(r'<HEADLINE>\n([\w\W]+?)\n</HEADLINE>[\w\W]+?<TEXT>\n([\w\W]+?)\n</TEXT>')
                 for match in pattern.findall(input_f.read()):
-
-                    print("h")
                     if FLAGS.lexrank == True: 
-                        print("lexrank true")
                         abstract, s1, s2 = lexrankSentences(match)
                     else: 
                         abstract, s1, s2 = match

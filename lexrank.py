@@ -128,8 +128,8 @@ def lexrank(sentences, num_sentences=2, word_thr=100, sent_split=False, word_spl
                 continue
             else:
                 break
-    return " ".join(lexrank_sentences)
-    # return lexrank_sentences
+    # return " ".join(lexrank_sentences)
+    return lexrank_sentences
 
 
 # def test():
