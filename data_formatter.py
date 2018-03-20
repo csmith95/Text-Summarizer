@@ -84,8 +84,6 @@ def convert_files_to_binary(input_filenames, output_filename, counter):
                     abstract = modify(abstract)
                     s1 = modify(s1)
                     s2 = modify(s2)
-                    print("***: ", s1)
-                    print("\n\n")
                     if len(abstract) == 0 or len(s1) == 0 or len(s2) == 0: continue
                     counter.update(' '.join([abstract, s1, s2]).split())
 
