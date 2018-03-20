@@ -115,6 +115,7 @@ def lexrank(sentences, num_sentences=2, word_thr=100, sent_split=False, word_spl
     lexrank_sentences = []
     word_counter = 0
     for num, score in sorted(lexrank.items(), key=lambda x:x[1], reverse=True):
+        print("***** ", original_sentences[num])
         lexrank_sentences.append(original_sentences[num])
         if len(lexrank_sentences) >= num_sentences:
             break
@@ -128,8 +129,7 @@ def lexrank(sentences, num_sentences=2, word_thr=100, sent_split=False, word_spl
                 continue
             else:
                 break
-    # return " ".join(lexrank_sentences)
-    print lexrank_sentences
+
     return lexrank_sentences
 
 
