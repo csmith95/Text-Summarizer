@@ -30,7 +30,8 @@ def lexrankSentences(match):
     pattern3 = re.compile(r'\n')
     text = pattern3.sub(" ",text)
     sentences = pattern2.findall(text)
-    s1,s1 = lexrank(sentences)
+    result = lexrank(sentences)
+    print(result)
     return abstract, s1, s2
 
 def text_to_binary(input_directories, output_filenames, split_fractions):
