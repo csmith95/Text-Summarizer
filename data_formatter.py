@@ -33,8 +33,6 @@ def lexrankSentences(match):
     result = lexrank(sentences)
     s1 = ''
     s2 = ''
-    print(result)
-    print("****\n")
     if len(result) > 2:
         s1 = result[0]
         s2 = result[1]
@@ -86,9 +84,6 @@ def convert_files_to_binary(input_filenames, output_filename, counter):
                     abstract = modify(abstract)
                     s1 = modify(s1)
                     s2 = modify(s2)
-                    # print(s1)
-                    # print(s2)
-                    # print("***\n")
                     if len(abstract) == 0 or len(s1) == 0 or len(s2) == 0: continue
                     counter.update(' '.join([abstract, s1, s2]).split())
 
