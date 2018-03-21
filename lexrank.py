@@ -105,8 +105,13 @@ def lexrank(sentences, num_sentences=2, word_thr=200, sent_split=False, word_spl
     if stemming:
         stemmer = stem.PorterStemmer()
         sentences = [stemmer.stem(sent) for sent in sentences]
+
+    while len(sentences) >= 8:
+        sentences = sentences[:len(sentences)/2]
+
     # make all words lowercase for calc tf-idf & lexrank
     sentences_lower = [sent.lower() for sent in sentences]
+
     # construct idf dictionary
     idf_set           = idf_dict(sentences_lower)
     similarity_matrix = idfmodified_cosine_matrix(sentences_lower, idf_set)
