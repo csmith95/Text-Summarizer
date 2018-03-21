@@ -102,10 +102,8 @@ def lexrank(sentences, num_sentences=2, word_thr=200, sent_split=False, word_spl
     if word_split:
         sentences = [" ".join(word_tokenize(sent)) for sent in sentences]
 
-    while len(sentences) >= 8:
+    while len(sentences) > 8:
         sentences = sentences[:len(sentences)/2]
-        print("h")
-    print("out")
 
     # stemming
     if stemming:

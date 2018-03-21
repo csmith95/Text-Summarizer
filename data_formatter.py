@@ -44,11 +44,14 @@ def text_to_binary(input_directories, output_filenames, split_fractions):
     start_from_index = 0
     counter = collections.Counter()	# for the vocab counts
 
+    count = 0
     for index, output_filename in enumerate(output_filenames):
         sample_count = int(len(filenames) * split_fractions[index])
         print(output_filename + ': ' + str(sample_count))
         end_index = min(start_from_index + sample_count, len(filenames))
         convert_files_to_binary(filenames[start_from_index:end_index], output_filename, counter)
+        count += len(filenames[start_from_index:end_index])
+        print("num files handled: ", count)
         start_from_index = end_index
 
     # create vocab file
@@ -71,6 +74,7 @@ def convert_files_to_binary(input_filenames, output_filename, counter):
     with open(output_filename, 'wb') as serialized_f:
         for filename in input_filenames:
             with open(filename, 'r') as input_f:
+                print("handling file: ", filename)
                 pattern = re.compile(r'<HEADLINE>\n([\w\W]+?)\n</HEADLINE>[\w\W]+?<P>\n([\w\W]+?)\n</P>[\w\W]+?<P>\n([\w\W]+?)\n</P>')
                 if FLAGS.lexrank == True:
                     pattern = re.compile(r'<HEADLINE>\n([\w\W]+?)\n</HEADLINE>[\w\W]+?<TEXT>\n([\w\W]+?)\n</TEXT>')
