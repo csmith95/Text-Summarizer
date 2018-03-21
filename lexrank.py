@@ -113,22 +113,20 @@ def lexrank(sentences, num_sentences=2, word_thr=200, sent_split=False, word_spl
     lexrank           = lexrank_graph(similarity_matrix, cos_th, alpha)
     lexrank_sentences = []
     word_counter = 0
-    print(original_sentences)
-    print("********\n"*2)
     for num, score in sorted(lexrank.items(), key=lambda x:x[1], reverse=True):
         lexrank_sentences.append(original_sentences[num])
         if len(lexrank_sentences) >= num_sentences:
             break
-        length = len(original_sentences[num].strip().split())
-        if word_counter+length <= word_thr:
-            word_counter += length
-            lexrank_sentences.append(original_sentences[num])
-        else:
-            # avoid to extract nothing if 1st sentence of lexrank score is longer than word_thr
-            if word_counter == 0:
-                continue
-            else:
-                break
+        # length = len(original_sentences[num].strip().split())
+        # if word_counter+length <= word_thr:
+        #     word_counter += length
+        #     lexrank_sentences.append(original_sentences[num])
+        # else:
+        #     # avoid to extract nothing if 1st sentence of lexrank score is longer than word_thr
+        #     if word_counter == 0:
+        #         continue
+        #     else:
+        #         break
 
     return lexrank_sentences
 
