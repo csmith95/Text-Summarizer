@@ -33,7 +33,7 @@ def lexrankSentences(match):
     result = lexrank(sentences)
     s1 = ''
     s2 = ''
-    if len(result) > 2:
+    if len(result) >= 2:
         s1 = result[0]
         s2 = result[1]
     return abstract, s1, s2
