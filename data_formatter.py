@@ -88,8 +88,10 @@ def convert_files_to_binary(input_filenames, output_filename, counter):
                     abstract = modify(abstract)
                     s1 = modify(s1)
                     s2 = modify(s2)
-                    print(abstract)
-                    if len(abstract) == 0 or len(s1) == 0 or len(s2) == 0: 
+                    if len(abstract) == 0 or len(s1) == 0 or len(s2) == 0:
+                        print(len(abstract))
+                        print(len(s1))
+                        print(len(s2))
                         print("continuing")
                         continue
                     print("here")
